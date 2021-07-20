@@ -6,6 +6,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 var (
@@ -30,11 +31,13 @@ func serverMessage(next echo.HandlerFunc) echo.HandlerFunc {
 
 // Start starts the application
 func Start() {
-	// method 1 to use middleware
-	e.Use(serverMessage)
-	e.POST("/products", createProduct)
-	// method 2 to use middleware
-	e.GET("/products", getProducts, serverMessage)
+	// method 1 echo middleware
+	// will be executied before the middleware
+	e.Pre(middleware.RemoveTrailingSlash())
+	// method 2 echo middleware
+	// will limit the size of the body that can be accepted
+	e.POST("/products", createProduct, middleware.BodyLimit("1K"))
+	e.GET("/products", getProducts)
 	e.GET("/products/:id", getProduct)
 	e.PUT("/products/:id", updateProduct)
 	e.DELETE("/products/:id", deleteProduct)
