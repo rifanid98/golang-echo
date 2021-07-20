@@ -26,6 +26,7 @@ var (
 )
 
 func getProducts(c echo.Context) error {
+	e.Logger.Print("Inside of getProducts")
 	query := strings.TrimSpace(c.QueryParam("name"))
 	if query == "" {
 		c.JSON(http.StatusOK, products)

@@ -21,10 +21,20 @@ func init() {
 	}
 }
 
+func serverMessage(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		e.Logger.Print("inside serverHeader middleware")
+		return next(c)
+	}
+}
+
 // Start starts the application
 func Start() {
+	// method 1 to use middleware
+	e.Use(serverMessage)
 	e.POST("/products", createProduct)
-	e.GET("/products", getProducts)
+	// method 2 to use middleware
+	e.GET("/products", getProducts, serverMessage)
 	e.GET("/products/:id", getProduct)
 	e.PUT("/products/:id", updateProduct)
 	e.DELETE("/products/:id", deleteProduct)
