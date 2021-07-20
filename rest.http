@@ -4,5 +4,14 @@ GET http://localhost:8080/welcome
 ###
 GET http://localhost:8080/method
 ###
-GET http://localhost:8080/products/4
+GET http://localhost:8080/products/
+###
+GET http://localhost:8080/products/3
+###
+POST http://localhost:8080/products
+Content-Type: application/json
+
+{
+  "name": "New Laptop"
+}
 ###
