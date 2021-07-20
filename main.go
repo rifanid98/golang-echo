@@ -6,11 +6,13 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
 var (
 	e *echo.Echo = echo.New()
+	v            = validator.New()
 )
 
 func main() {
@@ -73,12 +75,20 @@ func productsRoute() *echo.Echo {
 
 	e.POST("/products", func(c echo.Context) error {
 		type body struct {
-			Name string `json:"name"`
+			Name string `json:"name" validate:"required,min=4"`
+			// Vendor          string `json:"vendor" validate:"min=5,max=10"`
+			// Email           string `json:"email" validate:"required_with=Vendor,email"`
+			// Website         string `json:"website" validagte:"url"`
+			// Country         string `json:"country" validate:"ip"`
+			// DefaultDeviceIp string `json:"default_device_ip" validate:"ip"`
 		}
 
 		var reqBody body
 		if err := c.Bind(&reqBody); err != nil {
 			e.Logger.Fatal(err)
+			return err
+		}
+		if err := v.Struct(&reqBody); err != nil {
 			return err
 		}
 
