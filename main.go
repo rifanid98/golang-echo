@@ -64,12 +64,14 @@ func productsRoute() *echo.Echo {
 
 	e.GET("/products/:id", func(c echo.Context) error {
 		var product map[int]string
+
+		productId, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			return err
+		}
+
 		for _, p := range products {
 			for k := range p {
-				productId, err := strconv.Atoi(c.Param("id"))
-				if err != nil {
-					return err
-				}
 				if productId == k {
 					product = p
 				}
@@ -108,5 +110,45 @@ func productsRoute() *echo.Echo {
 		products = append(products, product)
 		return c.JSON(http.StatusCreated, product)
 	})
+
+	e.PUT("/products/:id", func(c echo.Context) error {
+		var product map[int]string
+
+		productId, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			return err
+		}
+
+		for _, p := range products {
+			for k := range p {
+				if productId == k {
+					product = p
+				}
+			}
+		}
+
+		if product == nil {
+			return c.JSON(http.StatusNotFound, "product not found")
+		}
+
+		type body struct {
+			Name string `json:"name" validate:"required,min=4"`
+		}
+
+		var reqBody body
+		e.Validator = &ProductValidator{validator: v}
+		if err := c.Bind(&reqBody); err != nil {
+			e.Logger.Fatal(err)
+			return err
+		}
+		if err := c.Validate(&reqBody); err != nil {
+			return err
+		}
+
+		product[productId] = reqBody.Name
+
+		return c.JSON(http.StatusOK, product)
+	})
+
 	return e
 }
