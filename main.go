@@ -40,7 +40,14 @@ func handlerWelcome(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// receive functions that have http.Responewriter parameters and *http.request
 	http.HandleFunc("/", handlerHelloWorld)
-	http.HandleFunc("/welcome", handlerWelcome)
+	// menerima http.HandlerFunc() atau variable/struct yang mengimplementasikan interface :
+	// type HandlerFunc func(ResponseWriter, *Request)
+	// ServeHTTP calls f(w, r).
+	// func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+	// 	f(w, r)
+	// }
+	http.Handle("/welcome", http.HandlerFunc(handlerWelcome))
 	http.ListenAndServe("localhost:8080", nil)
 }
