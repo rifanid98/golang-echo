@@ -39,15 +39,20 @@ func handlerWelcome(w http.ResponseWriter, r *http.Request) {
 	`)
 }
 
+func handleMethod(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		fmt.Fprintln(w, "GET Method")
+	case "POST":
+		fmt.Fprintln(w, "POST Method")
+	default:
+		fmt.Fprintln(w, "All Method")
+	}
+}
+
 func main() {
-	// receive functions that have http.Responewriter parameters and *http.request
 	http.HandleFunc("/", handlerHelloWorld)
-	// menerima http.HandlerFunc() atau variable/struct yang mengimplementasikan interface :
-	// type HandlerFunc func(ResponseWriter, *Request)
-	// ServeHTTP calls f(w, r).
-	// func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
-	// 	f(w, r)
-	// }
-	http.Handle("/welcome", http.HandlerFunc(handlerWelcome))
+	http.HandleFunc("/welcome", handlerWelcome)
+	http.HandleFunc("/method", handleMethod)
 	http.ListenAndServe("localhost:8080", nil)
 }

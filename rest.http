@@ -2,3 +2,5 @@ GET http://localhost:8080
 ###
 GET http://localhost:8080/welcome
 ###
+GET http://localhost:8080/method
+###
