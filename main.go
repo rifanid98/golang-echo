@@ -37,6 +37,14 @@ func mainRoute() *echo.Echo {
 	return e
 }
 
+type ProductValidator struct {
+	validator *validator.Validate
+}
+
+func (pv *ProductValidator) Validate(i interface{}) error {
+	return pv.validator.Struct(i)
+}
+
 func productsRoute() *echo.Echo {
 	products := []map[int]string{
 		{1: "Laptop"},
@@ -84,11 +92,12 @@ func productsRoute() *echo.Echo {
 		}
 
 		var reqBody body
+		e.Validator = &ProductValidator{validator: v}
 		if err := c.Bind(&reqBody); err != nil {
 			e.Logger.Fatal(err)
 			return err
 		}
-		if err := v.Struct(&reqBody); err != nil {
+		if err := c.Validate(&reqBody); err != nil {
 			return err
 		}
 
