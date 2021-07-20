@@ -5,15 +5,7 @@ import (
 	"net/http"
 )
 
-type myHandler struct{}
-
-func (h *myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello World")
-}
-
-type myHtmlHandler struct{}
-
-func (h *myHtmlHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func myHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, `
 		<!DOCTYPE html>
 		<html lang="en">
@@ -31,6 +23,5 @@ func (h *myHtmlHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// http.ListenAndServe("localhost:8080", &myHandler{})
-	http.ListenAndServe("localhost:8080", &myHtmlHandler{})
+	http.ListenAndServe("localhost:8080", http.HandlerFunc(myHandler))
 }
