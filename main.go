@@ -150,5 +150,32 @@ func productsRoute() *echo.Echo {
 		return c.JSON(http.StatusOK, product)
 	})
 
+	e.DELETE("/products/:id", func(c echo.Context) error {
+		var product map[int]string
+
+		productId, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			return err
+		}
+
+		var index int
+		for i, p := range products {
+			for k := range p {
+				if productId == k {
+					product = p
+					index = i
+				}
+			}
+		}
+
+		if product == nil {
+			return c.JSON(http.StatusNotFound, "product not found")
+		}
+
+		products = append(products[:index], products[index+1:]...)
+
+		return c.JSON(http.StatusOK, products)
+	})
+
 	return e
 }
