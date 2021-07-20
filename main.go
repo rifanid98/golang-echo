@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -41,8 +42,13 @@ func productsRoute() *echo.Echo {
 		{3: "Mouse"},
 	}
 
-	e.GET("/products/", func(c echo.Context) error {
-		c.JSON(http.StatusOK, products)
+	e.GET("/products", func(c echo.Context) error {
+		query := strings.TrimSpace(c.QueryParam("name"))
+		if query == "" {
+			c.JSON(http.StatusOK, products)
+		} else {
+			c.JSON(http.StatusNotFound, "name query param was disabled")
+		}
 		return nil
 	})
 

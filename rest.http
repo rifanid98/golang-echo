@@ -4,7 +4,9 @@ GET http://localhost:8080/welcome
 ###
 GET http://localhost:8080/method
 ###
-GET http://localhost:8080/products/
+GET http://localhost:8080/products
+###
+GET http://localhost:8080/products?name=name
 ###
 GET http://localhost:8080/products/3
 ###
